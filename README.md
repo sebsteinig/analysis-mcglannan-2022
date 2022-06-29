@@ -1,14 +1,10 @@
-# boilerplate python notebook template
-This repo should contain all documentation, scripts and data to recreate the final figure/analysis from the source data. Final analysis and plotting is done in jupyter notebooks with a python kernel for interactive analysis of the source or preprocessed data and inline documentation. 
+# Devono-Mississippian winds over the greater US Midcontinent 
 
 ## purpose
-What do I want to do?
+Analysis of the simulated wind fields and precipitation in the Devono-Mississippian simulations of [Valdes et al. (2021)](https://cp.copernicus.org/articles/17/1483/2021/). Particular focus is on a possible eolian dust source for strata of the North American midcontinent. Paleolocations for the study sites and potential dust sources are reconstructed with [pyGPlates](https://www.gplates.org/docs/pygplates/) using my [template repo](https://github.com/sebsteinig/pyGPlates-reconstructions-template).
 
 ## source data
-Some external, static data that builds the starting point of the analysis (e.g model output, CMIP archive, OPeNDAP server, ...) 
-
-## preprocessing
-Large source data should be preprocessed before importing into the jupyter notebook (e.g., regridding, averaging, ...) to speed up interactive analysis and to allow distribution via github (100 MB file size limit). Put the preprocessing script into this repo and describe what you have done with the source data
+HadCM3BL model output from the BRIDGE webpage processing. Simulations are from the `Scotese_02` set as described in [Valdes et al. (2021)](https://cp.copernicus.org/articles/17/1483/2021/). Data can be accessed at the [BRIDGE website](https://www.paleo.bristol.ac.uk/ummodel/scripts/papers/Valdes_et_al_2021.html). 
 
 ## running the notebooks
 Notebooks can either be run on [Google Colab](https://colab.research.google.com/) (online, Google account required) or locally. Notebooks should include a button to open it in Colab, otherwise you can also directly load a GitHub repo within Colab. Easiest way to run locally is to first download the repo with
