@@ -23,6 +23,7 @@ def scale_bar(ax, length=None, location=(0.5, 0.05), linewidth=3):
     #Turn the specified scalebar location into coordinates in metres
     sbx = x0 + (x1 - x0) * location[0]
     sby = y0 + (y1 - y0) * location[1]
+    sbyText = y0 + (y1 - y0) * location[1] * 1.1
 
     #Calculate a scale bar length if none has been given
     #(Theres probably a more pythonic way of rounding the number but this works)
@@ -39,7 +40,8 @@ def scale_bar(ax, length=None, location=(0.5, 0.05), linewidth=3):
     #Generate the x coordinate for the ends of the scalebar
     bar_xs = [sbx - length * 500, sbx + length * 500]
     #Plot the scalebar
-    ax.plot(bar_xs, [sby, sby], transform=tmc, color='k', linewidth=linewidth, zorder=3)
+    ax.plot(bar_xs, [sby, sby], transform=tmc, color='k', linewidth=linewidth, zorder=4)
     #Plot the scalebar label
-    ax.text(sbx, sby, str(length) + ' km', transform=tmc,
-            horizontalalignment='center', verticalalignment='bottom', zorder=3)
+    ax.text(sbx, sbyText, str(length) + ' km', transform=tmc,
+            horizontalalignment='center', verticalalignment='bottom', zorder=3, 
+            bbox=dict(facecolor='white', edgecolor='black', pad=12.0, linewidth=2.0))
