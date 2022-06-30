@@ -85,6 +85,7 @@ from cartopy.util import add_cyclic_point
 import cartopy.feature as cfeature
 import cartopy.io.shapereader as shpreader
 
+from scale_bar import scale_bar
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -177,24 +178,17 @@ for expCount, exp in enumerate(exp_list_reduced):
         
 #    axes[expCount,column].text(0.03, 0.97, labels_reduced[expCount] + ' DJF', transform=axes[expCount,column].transAxes, fontsize=20, fontweight='bold', va='top', ha='left', bbox=dict(facecolor='white', edgecolor='black', pad=3.0), zorder=5)
     #plotNum = 
-    axes[expCount,column].text(0.0, 1.05, panel_labels[expCount*2 + 0] + ' ' + labels_reduced[expCount] + ' DJF', transform=axes[expCount,column].transAxes, fontsize=10, va='center', ha='left', zorder=5)
-
-    # plot site locations
-    points = list(shpreader.Reader(work_dir + '/reconstructions/' + labels_reduced[expCount] + '/midcontinent_sites_' + labels_reduced[expCount] + '.shp').geometries())
-    markers = ["o", "v", "s", "^", "*"]
-    for pointNum, point in enumerate(points):
-        if markers[pointNum] == "*":
-            markerSize = 120
-        else:
-            markerSize = 60
-        #print(points)
-        axes[expCount,column].scatter(point.x, point.y, transform=ccrs.PlateCarree(), 
-                        marker=markers[pointNum], color='tab:red', edgecolor='k', s=markerSize, zorder=5)   
+    axes[expCount,column].text(0.0, 1.05, panel_labels[expCount*2 + 0] + ' ' + labels_reduced[expCount] + ' DJF', transform=axes[expCount,column].transAxes, fontsize=10, va='center', ha='left', zorder=5)  
 
     # plot wedges location 
     shp_info = shpreader.Reader(work_dir + '/reconstructions/' + labels_reduced[expCount] + '/' + wedges_file + '_' + labels_reduced[expCount] + '.shp').geometries()
     wedges  = cfeature.ShapelyFeature(shp_info, ccrs.PlateCarree())
     axes[expCount,column].add_feature(wedges, facecolor='gold', edgecolor='k', linewidth=1.5, alpha=1.0, zorder=5)
+ 
+    # plot Oklahoma outline 
+    shp_info = shpreader.Reader(work_dir + '/reconstructions/' + labels_reduced[expCount] + '/oklahoma-shape_' + labels_reduced[expCount] + '.shp').geometries()
+    wedges  = cfeature.ShapelyFeature(shp_info, ccrs.PlateCarree())
+    axes[expCount,column].add_feature(wedges, facecolor='none', edgecolor='tab:red', linewidth=3.0, alpha=1.0, zorder=5)
     
     # gridlines
     gl = axes[expCount,column].gridlines(crs=ccrs.PlateCarree(), draw_labels=True, linewidth=0., color='gray', alpha=0.5, linestyle='--')
@@ -211,12 +205,12 @@ for expCount, exp in enumerate(exp_list_reduced):
     pr_JJA = pr_cyclic[[5,6,7],:,:].mean(axis=0)
 
     axes[expCount,column] = plt.subplot(len(exp_list_reduced), 2, plotRow * 2 + 2, projection=ccrs.PlateCarree())
-    axes[expCount,column].set_extent([-60,10, -40,10], ccrs.PlateCarree())
+    axes[expCount,column].set_extent([-60,10, -40,10])
 
     cf = axes[expCount,column].contourf(longitude_cyclic, latitude, modelHeight_cyclic, transform=ccrs.PlateCarree(),
                                         levels=21, vmin=-3000, vmax=3000, cmap=cmocean.cm.topo,
                                         add_colorbar=False,zorder=1, alpha=1.0 )
-    
+
       
     cn = axes[expCount,column].contour(longitude_cyclic, latitude, modelHeight_cyclic, transform=ccrs.PlateCarree(),
         levels=[0.0], colors='gray',zorder=1)
@@ -240,24 +234,21 @@ for expCount, exp in enumerate(exp_list_reduced):
     qk.text.set_fontsize(10)
 
 #    axes[expCount,column].text(0.03, 0.97, labels_reduced[expCount] + ' JJA', transform=axes[expCount,column].transAxes, fontsize=20, fontweight='bold', va='top', ha='left', bbox=dict(facecolor='white', edgecolor='black', pad=3.0), zorder=5)
-    axes[expCount,column].text(0.0, 1.05, panel_labels[expCount*2 + 1] + ' ' + labels_reduced[expCount] + ' JJA', transform=axes[expCount,column].transAxes, fontsize=10, va='center', ha='left', zorder=5)
-
-    # plot site locations
-    points = list(shpreader.Reader(work_dir + '/reconstructions/' + labels_reduced[expCount] + '/midcontinent_sites_' + labels_reduced[expCount] + '.shp').geometries())
-    markers = ["o", "v", "s", "^", "*"]
-    for pointNum, point in enumerate(points):
-        if markers[pointNum] == "*":
-            markerSize = 120
-        else:
-            markerSize = 60
-        axes[expCount,column].scatter(point.x, point.y, transform=ccrs.PlateCarree(), 
-                        marker=markers[pointNum], color='tab:red', edgecolor='k', s=markerSize, zorder=5)   
+    axes[expCount,column].text(0.0, 1.05, panel_labels[expCount*2 + 1] + ' ' + labels_reduced[expCount] + ' JJA', transform=axes[expCount,column].transAxes, fontsize=10, va='center', ha='left', zorder=5)  
 
     # plot wedges location 
     shp_info = shpreader.Reader(work_dir + '/reconstructions/' + labels_reduced[expCount] + '/' + wedges_file + '_' + labels_reduced[expCount] + '.shp').geometries()
     wedges  = cfeature.ShapelyFeature(shp_info, ccrs.PlateCarree())
     axes[expCount,column].add_feature(wedges, facecolor='gold', edgecolor='k', linewidth=1.5, alpha=1.0, zorder=5)
     
+    # plot Oklahoma outline 
+    shp_info = shpreader.Reader(work_dir + '/reconstructions/' + labels_reduced[expCount] + '/oklahoma-shape_' + labels_reduced[expCount] + '.shp').geometries()
+    wedges  = cfeature.ShapelyFeature(shp_info, ccrs.PlateCarree())
+    axes[expCount,column].add_feature(wedges, facecolor='none', edgecolor='tab:red', linewidth=3.0, alpha=1.0, zorder=5)
+    
+    #scale_bar(axes[expCount,column], length=1000, location=(0.5, 0.15))
+    scale_bar(axes[expCount,column], 1000, location=(0.5, 0.15))
+
     # gridlines
     gl = axes[expCount,column].gridlines(crs=ccrs.PlateCarree(), draw_labels=True, linewidth=.0, color='gray', alpha=0.5, linestyle='solid')
     gl.top_labels = False
@@ -271,7 +262,8 @@ for expCount, exp in enumerate(exp_list_reduced):
 
 
 if save_figures:
-     plt.savefig(work_dir + '/figures/Devono-Mississippian-winds-NA_main.jpg', dpi=200)
+    #plt.savefig(work_dir + '/figures/Devono-Mississippian-winds-NA_main.jpg', dpi=200)
+    plt.savefig(work_dir + '/figures/Devono-Mississippian-winds-NA_main.pdf')
 
 # -
 

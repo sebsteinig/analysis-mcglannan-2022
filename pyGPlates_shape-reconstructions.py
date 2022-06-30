@@ -58,7 +58,7 @@ if IN_COLAB:
 
 # +
 # input csv file with label, modern latitude, modern longitude
-files_input_shapes = ['catskill-shape', 'pennington-shape', 'price-pocono-shape', 'oklahoma_shape']
+files_input_shapes = ['catskill-shape', 'pennington-shape', 'price-pocono-shape', 'oklahoma-shape']
 
 # list of ages (in Ma) for which we want to reconstruct paleolocations for the input sites
 ages = ['385', '380', '375', '370', '366', '359', '354', '349', '344', '339', '333', '327']
