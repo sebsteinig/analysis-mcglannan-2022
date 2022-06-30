@@ -471,3 +471,58 @@ for expCount, exp in enumerate(exp_list):
 if save_figures:
      plt.savefig(work_dir + '/figures/Devono-Mississippian-winds-NA_supplements.jpg', dpi=200)
 
+
+# +
+### Figure 3: Global paleogeography maps (for SI)
+
+# +
+exp_list = np.flip(['teXpz', 'teXpy', 'teXpx', 'teXpw', 'teXpv', 'teXpu', 'teXpt', 'teXps', 'teXpr', 'teXpq', 'teXpp', 'teXpn']) # list of data sets to loop over
+labels   = np.flip(['385Ma', '380Ma', '375Ma', '370Ma', '366Ma', '359Ma', '354Ma', '349Ma', '344Ma', '339Ma', '333Ma', '327Ma']) # list of associated ages for labeling
+
+# loop over all models
+# define figure layout first
+fig, axes = plt.subplots(6, 2, figsize=(13, 20), constrained_layout = True )
+
+row = 0.
+for expCount, exp in enumerate(exp_list):
+    
+    column = expCount%2
+
+    # load data
+    modelHeight = xr.open_dataset(data_dir + 'HadCM3BL/' + exp + '.modelHeight.nc', decode_times=False).modelHeight 
+    latitude = xr.open_dataset(data_dir + 'HadCM3BL/' + exp + '.modelHeight.nc', decode_times=False).latitude 
+    longitude = xr.open_dataset(data_dir + 'HadCM3BL/' + exp + '.modelHeight.nc', decode_times=False).longitude 
+
+    lsm = xr.open_dataset(data_dir + 'HadCM3BL/' + exp + '.mask.nc', decode_times=False).lsm [0,0,:,:]
+    
+    # add cyclic longitude
+    modelHeight_cyclic, longitude_cyclic = add_cyclic_point(modelHeight, coord=longitude)
+    lsm_cyclic = add_cyclic_point(lsm)
+
+    axes[int(row),column] = plt.subplot(6, 2, expCount+1, projection=ccrs.PlateCarree())
+    axes[int(row),column].set_global()
+
+    cf = axes[int(row),column].contourf(longitude_cyclic, latitude, modelHeight_cyclic, transform=ccrs.PlateCarree(),
+                                        levels=21, vmin=-3000, vmax=3000, cmap=cmocean.cm.topo,
+                                        add_colorbar=False,zorder=1, alpha=0.9 )
+
+    axes[int(row),column].text(0.0, 1.05, labels[expCount] + ' ANN', transform=axes[int(row),column].transAxes, fontsize=14, va='center', ha='left', zorder=5)
+   
+    # plot Oklahoma shape 
+    shp_info = shpreader.Reader(work_dir + '/reconstructions/' + labels[expCount] + '/oklahoma-shape_' + labels[expCount] + '.shp').geometries()
+    wedges  = cfeature.ShapelyFeature(shp_info, ccrs.PlateCarree())
+    axes[int(row),column].add_feature(wedges, facecolor='lightcoral', edgecolor='none', alpha=0.3, zorder=5)
+    axes[int(row),column].add_feature(wedges, facecolor='none', edgecolor='tab:red', linewidth=3.0, alpha=1., zorder=5)
+    
+    # gridlines
+    gl = axes[int(expCount/2.),column].gridlines(crs=ccrs.PlateCarree(), draw_labels=True, linewidth=0., color='gray', alpha=0.5, linestyle='--')
+    gl.top_labels = False
+    gl.bottom_labels = False
+    gl.right_labels = False
+    gl.xlines = False
+    
+    row += 0.5
+            
+if save_figures:
+     plt.savefig(work_dir + '/figures/Devono-Mississippian-global-geographys.jpg', dpi=200)
+
