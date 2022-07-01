@@ -277,7 +277,7 @@ labels   = np.flip(['385Ma', '380Ma', '375Ma', '370Ma', '366Ma', '359Ma', '354Ma
 
 # loop over all models
 # define figure layout first
-fig, axes = plt.subplots(len(exp_list), 3, figsize=(13, 40), constrained_layout = True )
+fig, axes = plt.subplots(len(exp_list), 3, figsize=(14.5, 40), constrained_layout = True )
     
 plotRow = 0
     
@@ -478,8 +478,8 @@ for expCount, exp in enumerate(exp_list):
     plotRow += 1
         
 if save_figures:
-    plt.savefig(work_dir + '/figures/Devono-Mississippian-winds-NA_supplements.jpg', dpi=200)
-
+    #plt.savefig(work_dir + '/figures/Devono-Mississippian-winds-NA_supplements.jpg', dpi=200)
+    plt.savefig(work_dir + '/figures/Devono-Mississippian-winds-NA_supplements.pdf')
 
 # +
 ### Figure 3: Global paleogeography maps (for SI)
