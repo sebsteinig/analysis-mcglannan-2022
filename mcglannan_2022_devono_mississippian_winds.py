@@ -75,6 +75,7 @@ save_figures   = True # flag whether to save figures to disk or not
 # + colab={"base_uri": "https://localhost:8080/"} id="WcMt0hmK_38Q" outputId="1ca62e3a-a818-48f8-aea4-d2827f558cdb"
 ### some standard packages
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import numpy as np
 import xarray as xr
 import csv
@@ -138,14 +139,14 @@ for expCount, exp in enumerate(exp_list_reduced):
     pr_DJF = pr_cyclic[[11,0,1],:,:].mean(axis=0)
 
     axes[expCount,column] = plt.subplot(len(exp_list_reduced), 2, plotRow * 2 + 1, projection=ccrs.PlateCarree())
-    axes[expCount,column].set_extent([-60,10, -40,10], ccrs.PlateCarree())
+    axes[expCount,column].set_extent([-60,10, -45,10], ccrs.PlateCarree())
 
     cf = axes[expCount,column].contourf(longitude_cyclic, latitude, modelHeight_cyclic, transform=ccrs.PlateCarree(),
                                         levels=21, vmin=-3000, vmax=3000, cmap=cmocean.cm.topo,
                                         add_colorbar=False,zorder=1, alpha=1.0 )
     
     cn = axes[expCount,column].contour(longitude_cyclic, latitude, modelHeight_cyclic, transform=ccrs.PlateCarree(),
-                                    levels=[0.0], colors='gray',zorder=1)
+                                    levels=[0.0], colors='black',zorder=1, linewidths=4.)
                                      
         
     #cp = axes[expCount,column].contour(longitude_cyclic, latitude, pr_DJF, transform=ccrs.PlateCarree(),levels = [0, 4, 8, 12], cmap='BuPu', linewidths=2., linestyles='solid', zorder=2)
@@ -164,7 +165,7 @@ for expCount, exp in enumerate(exp_list_reduced):
     qk = axes[expCount,column].quiverkey(q, X=0.77, Y=1.05, U=10,
         label='10 m/s', labelpos='E')
     
-    qk.text.set_fontsize(20)
+    qk.text.set_fontsize(16)
 
     # Late Devonian Clastic Wedge: Time Slices 385 Ma – 359 Ma
     if exp == 'teXpz' or exp == 'teXpy' or exp == 'teXpx' or exp == 'teXpw' or exp == 'teXpv' or exp == 'teXpu':
@@ -178,7 +179,7 @@ for expCount, exp in enumerate(exp_list_reduced):
         
 #    axes[expCount,column].text(0.03, 0.97, labels_reduced[expCount] + ' DJF', transform=axes[expCount,column].transAxes, fontsize=20, fontweight='bold', va='top', ha='left', bbox=dict(facecolor='white', edgecolor='black', pad=3.0), zorder=5)
     #plotNum = 
-    axes[expCount,column].text(0.0, 1.05, panel_labels[expCount*2 + 0] + ' ' + labels_reduced[expCount] + ' DJF', transform=axes[expCount,column].transAxes, fontsize=20, va='center', ha='left', zorder=5)  
+    axes[expCount,column].text(0.0, 1.05, panel_labels[expCount*2 + 0] + ' ' + labels_reduced[expCount] + ' DJF', transform=axes[expCount,column].transAxes, fontsize=16, va='center', ha='left', zorder=5)  
 
     # plot wedges location 
     shp_info = shpreader.Reader(work_dir + '/reconstructions/' + labels_reduced[expCount] + '/' + wedges_file + '_' + labels_reduced[expCount] + '.shp').geometries()
@@ -206,7 +207,7 @@ for expCount, exp in enumerate(exp_list_reduced):
     pr_JJA = pr_cyclic[[5,6,7],:,:].mean(axis=0)
 
     axes[expCount,column] = plt.subplot(len(exp_list_reduced), 2, plotRow * 2 + 2, projection=ccrs.PlateCarree())
-    axes[expCount,column].set_extent([-60,10, -40,10], ccrs.PlateCarree())
+    axes[expCount,column].set_extent([-60,10, -45,10], ccrs.PlateCarree())
 
     cf = axes[expCount,column].contourf(longitude_cyclic, latitude, modelHeight_cyclic, transform=ccrs.PlateCarree(),
                                         levels=21, vmin=-3000, vmax=3000, cmap=cmocean.cm.topo,
@@ -214,7 +215,7 @@ for expCount, exp in enumerate(exp_list_reduced):
 
       
     cn = axes[expCount,column].contour(longitude_cyclic, latitude, modelHeight_cyclic, transform=ccrs.PlateCarree(),
-        levels=[0.0], colors='gray',zorder=1)
+        levels=[0.0], colors='black',zorder=1, linewidths=4.)
     
     #cp = axes[expCount,column].contour(longitude_cyclic, latitude, pr_JJA, transform=ccrs.PlateCarree(),levels = [0, 4, 8, 12], cmap='BuPu', linewidths=2.0, linestyles='solid', zorder=2)
 
@@ -232,10 +233,10 @@ for expCount, exp in enumerate(exp_list_reduced):
     qk = axes[expCount,column].quiverkey(q, X=0.77, Y=1.05, U=10,
         label='10 m/s', labelpos='E')
     
-    qk.text.set_fontsize(20)
+    qk.text.set_fontsize(16)
 
 #    axes[expCount,column].text(0.03, 0.97, labels_reduced[expCount] + ' JJA', transform=axes[expCount,column].transAxes, fontsize=20, fontweight='bold', va='top', ha='left', bbox=dict(facecolor='white', edgecolor='black', pad=3.0), zorder=5)
-    axes[expCount,column].text(0.0, 1.05, panel_labels[expCount*2 + 1] + ' ' + labels_reduced[expCount] + ' JJA', transform=axes[expCount,column].transAxes, fontsize=20, va='center', ha='left', zorder=5)  
+    axes[expCount,column].text(0.0, 1.05, panel_labels[expCount*2 + 1] + ' ' + labels_reduced[expCount] + ' JJA', transform=axes[expCount,column].transAxes, fontsize=16, va='center', ha='left', zorder=5)  
 
     # plot wedges location 
     shp_info = shpreader.Reader(work_dir + '/reconstructions/' + labels_reduced[expCount] + '/' + wedges_file + '_' + labels_reduced[expCount] + '.shp').geometries()
@@ -310,14 +311,17 @@ for expCount, exp in enumerate(exp_list):
     pr_ym = pr_cyclic.mean(axis=0)
 
     axes[expCount,column] = plt.subplot(len(exp_list), 3, plotRow * 3 + 1, projection=ccrs.PlateCarree())
-    axes[expCount,column].set_extent([-65,18, -50,20], ccrs.PlateCarree())
+    axes[expCount,column].set_extent([-60,10, -45,10], ccrs.PlateCarree())
 
     cf = axes[expCount,column].contourf(longitude_cyclic, latitude, modelHeight_cyclic, transform=ccrs.PlateCarree(),
                                         levels=21, vmin=-3000, vmax=3000, cmap=cmocean.cm.topo,
                                         add_colorbar=False,zorder=1, alpha=0.9 )
+    # precip
     cn = axes[expCount,column].contour(longitude_cyclic, latitude, pr_ym, transform=ccrs.PlateCarree(),levels = [0, 2, 4, 6, 8, 10, 12], cmap='PuOr', linewidths=3, linestyles='dashed', zorder=4)
-
     axes[expCount,column].clabel(cn, cn.levels, inline=True, fontsize=10) 
+
+    # coastline
+    cn = axes[expCount,column].contour(longitude_cyclic, latitude, modelHeight_cyclic, transform=ccrs.PlateCarree(),levels=[0.0], colors='black',zorder=1, linewidths=3.) 
 
     q = axes[expCount,column].quiver(longitudeV_cyclic, 
                                      latitudeV, 
@@ -340,11 +344,11 @@ for expCount, exp in enumerate(exp_list):
     if exp == 'teXpz' or exp == 'teXpy' or exp == 'teXpx' or exp == 'teXpw' or exp == 'teXpv' or exp == 'teXpu':
         wedges_file = 'catskill-shape'
     # Price Pocono Clastic Wedge: Time Slices 354 Ma - 333 Ma
-    elif exp == 'teXpt' or exp == 'teXps' or exp == 'teXpr' or exp == 'teXpq' or exp == 'teXpp':
+    elif exp == 'teXpt' or exp == 'teXps' or exp == 'teXpr' or exp == 'teXpq' or exp == 'teXpp' or exp == 'teXpn':
         wedges_file = 'price-pocono-shape'
     # Pennington – Mauch Chunk: Time Slice 327 Ma
-    elif exp == 'teXpn':
-        wedges_file = 'pennington-shape'
+    # elif exp == 'teXpn':
+    #     wedges_file = 'pennington-shape'
         
     # plot wedges location 
     shp_info = shpreader.Reader(work_dir + '/reconstructions/' + labels[expCount] + '/' + wedges_file + '_' + labels[expCount] + '.shp').geometries()
@@ -371,14 +375,16 @@ for expCount, exp in enumerate(exp_list):
     pr_DJF = pr_cyclic[[11,0,1],:,:].mean(axis=0)
 
     axes[expCount,column] = plt.subplot(len(exp_list), 3, plotRow * 3 + 2, projection=ccrs.PlateCarree())
-    axes[expCount,column].set_extent([-65,18, -50,20], ccrs.PlateCarree())
+    axes[expCount,column].set_extent([-60,10, -45,10], ccrs.PlateCarree())
 
     cf = axes[expCount,column].contourf(longitude_cyclic, latitude, modelHeight_cyclic, transform=ccrs.PlateCarree(),
                                         levels=21, vmin=-3000, vmax=3000, cmap=cmocean.cm.topo,
                                         add_colorbar=False,zorder=1, alpha=0.9 )
     cn = axes[expCount,column].contour(longitude_cyclic, latitude, pr_DJF, transform=ccrs.PlateCarree(),levels = [0, 2, 4, 6, 8, 10, 12], cmap='PuOr', linewidths=3, linestyles='dashed', zorder=4)
-
     axes[expCount,column].clabel(cn, cn.levels, inline=True, fontsize=10) 
+
+    # coastline
+    cn = axes[expCount,column].contour(longitude_cyclic, latitude, modelHeight_cyclic, transform=ccrs.PlateCarree(),levels=[0.0], colors='black',zorder=1, linewidths=3.)  
     
     q = axes[expCount,column].quiver(longitudeV_cyclic, 
                                      latitudeV, 
@@ -422,7 +428,7 @@ for expCount, exp in enumerate(exp_list):
     pr_JJA = pr_cyclic[[5,6,7],:,:].mean(axis=0)
 
     axes[expCount,column] = plt.subplot(len(exp_list), 3, plotRow * 3 + 3, projection=ccrs.PlateCarree())
-    axes[expCount,column].set_extent([-65,18, -50,20], ccrs.PlateCarree())
+    axes[expCount,column].set_extent([-60,10, -45,10], ccrs.PlateCarree())
 
     cf = axes[expCount,column].contourf(longitude_cyclic, latitude, modelHeight_cyclic, transform=ccrs.PlateCarree(),
                                         levels=21, vmin=-3000, vmax=3000, cmap=cmocean.cm.topo,
@@ -430,6 +436,9 @@ for expCount, exp in enumerate(exp_list):
     cn = axes[expCount,column].contour(longitude_cyclic, latitude, pr_JJA, transform=ccrs.PlateCarree(),levels = [0, 2, 4, 6, 8, 10, 12], cmap='PuOr', linewidths=3, linestyles='dashed', zorder=4)
 
     axes[expCount,column].clabel(cn, cn.levels, inline=True, fontsize=10) 
+
+    # coastline
+    cn = axes[expCount,column].contour(longitude_cyclic, latitude, modelHeight_cyclic, transform=ccrs.PlateCarree(),levels=[0.0], colors='black',zorder=1, linewidths=3.) 
     
     q = axes[expCount,column].quiver(longitudeV_cyclic, 
                                      latitudeV, 
@@ -469,7 +478,7 @@ for expCount, exp in enumerate(exp_list):
     plotRow += 1
         
 if save_figures:
-     plt.savefig(work_dir + '/figures/Devono-Mississippian-winds-NA_supplements.jpg', dpi=200)
+    plt.savefig(work_dir + '/figures/Devono-Mississippian-winds-NA_supplements.jpg', dpi=200)
 
 
 # +
@@ -499,30 +508,60 @@ for expCount, exp in enumerate(exp_list):
     modelHeight_cyclic, longitude_cyclic = add_cyclic_point(modelHeight, coord=longitude)
     lsm_cyclic = add_cyclic_point(lsm)
 
-    axes[int(row),column] = plt.subplot(6, 2, expCount+1, projection=ccrs.PlateCarree())
+    axes[int(row),column] = plt.subplot(6, 2, expCount+1, projection=ccrs.Robinson())
     axes[int(row),column].set_global()
 
     cf = axes[int(row),column].contourf(longitude_cyclic, latitude, modelHeight_cyclic, transform=ccrs.PlateCarree(),
                                         levels=21, vmin=-3000, vmax=3000, cmap=cmocean.cm.topo,
                                         add_colorbar=False,zorder=1, alpha=0.9 )
 
-    axes[int(row),column].text(0.0, 1.05, labels[expCount] + ' ANN', transform=axes[int(row),column].transAxes, fontsize=14, va='center', ha='left', zorder=5)
-   
+    # coastline
+    cn = axes[int(row),column].contour(longitude_cyclic, latitude, modelHeight_cyclic, transform=ccrs.PlateCarree(),levels=[0.0], colors='black',zorder=1, linewidths=2.0)  
+
+    axes[int(row),column].text(0.5, 1.05, labels[expCount], transform=axes[int(row),column].transAxes, fontsize=18, va='center', ha='center', zorder=5)
+ 
+    # Late Devonian Clastic Wedge: Time Slices 385 Ma – 359 Ma
+    if exp == 'teXpz' or exp == 'teXpy' or exp == 'teXpx' or exp == 'teXpw' or exp == 'teXpv' or exp == 'teXpu':
+        wedges_file = 'catskill-shape'
+    # Price Pocono Clastic Wedge: Time Slices 354 Ma - 333 Ma
+    elif exp == 'teXpt' or exp == 'teXps' or exp == 'teXpr' or exp == 'teXpq' or exp == 'teXpp' or exp == 'teXpn':
+        wedges_file = 'price-pocono-shape'
+    # Pennington – Mauch Chunk: Time Slice 327 Ma
+    # elif exp == 'teXpn':
+    #     wedges_file = 'pennington-shape'
+        
+    # plot wedges location 
+    shp_info = shpreader.Reader(work_dir + '/reconstructions/' + labels[expCount] + '/' + wedges_file + '_' + labels[expCount] + '.shp').geometries()
+    wedges  = cfeature.ShapelyFeature(shp_info, ccrs.PlateCarree())
+    axes[int(row),column].add_feature(wedges, facecolor='gold', edgecolor='k', linewidth=1.0, alpha=1.0, zorder=5)
+    
     # plot Oklahoma shape 
     shp_info = shpreader.Reader(work_dir + '/reconstructions/' + labels[expCount] + '/oklahoma-shape_' + labels[expCount] + '.shp').geometries()
     wedges  = cfeature.ShapelyFeature(shp_info, ccrs.PlateCarree())
     axes[int(row),column].add_feature(wedges, facecolor='lightcoral', edgecolor='none', alpha=0.3, zorder=5)
-    axes[int(row),column].add_feature(wedges, facecolor='none', edgecolor='tab:red', linewidth=3.0, alpha=1., zorder=5)
+    axes[int(row),column].add_feature(wedges, facecolor='none', edgecolor='tab:red', linewidth=1.0, alpha=1., zorder=5)
     
+    axes[int(row),column].add_patch(mpatches.Rectangle(xy=[-60, -45], width=70, height=55,
+                                facecolor='none',
+                                edgecolor='tab:red',
+                                linewidth=3.0,
+                                alpha=1.0,
+                                linestyle='-',
+                                zorder=5,
+                                transform=ccrs.PlateCarree())
+             )
+    
+
     # gridlines
-    gl = axes[int(expCount/2.),column].gridlines(crs=ccrs.PlateCarree(), draw_labels=True, linewidth=0., color='gray', alpha=0.5, linestyle='--')
+    gl = axes[int(expCount/2.),column].gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1., color='gray', alpha=0.5, linestyle='--')
     gl.top_labels = False
     gl.bottom_labels = False
     gl.right_labels = False
-    gl.xlines = False
+    gl.xlines = True
     
     row += 0.5
             
 if save_figures:
-     plt.savefig(work_dir + '/figures/Devono-Mississippian-global-geographys.jpg', dpi=200)
+     #plt.savefig(work_dir + '/figures/Devono-Mississippian-global-geographys.jpg', dpi=200)
+    plt.savefig(work_dir + '/figures/Devono-Mississippian-global-geographys.pdf')
 
