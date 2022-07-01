@@ -503,11 +503,24 @@ for expCount, exp in enumerate(exp_list):
     longitude = xr.open_dataset(data_dir + 'HadCM3BL/' + exp + '.modelHeight.nc', decode_times=False).longitude 
 
     lsm = xr.open_dataset(data_dir + 'HadCM3BL/' + exp + '.mask.nc', decode_times=False).lsm [0,0,:,:]
+ 
+    uwnd = xr.open_dataset(data_dir + 'HadCM3BL/' + exp + '.pd.clim.nc', decode_times=False).u_mm_10m[:,0,:,:]
+    vwnd = xr.open_dataset(data_dir + 'HadCM3BL/' + exp + '.pd.clim.nc', decode_times=False).v_mm_10m[:,0,:,:] 
+    latitudeV = xr.open_dataset(data_dir + 'HadCM3BL/' + exp + '.pd.clim.nc', decode_times=False).latitude_1
+    longitudeV = xr.open_dataset(data_dir + 'HadCM3BL/' + exp + '.pd.clim.nc', decode_times=False).longitude_1
+    
+    pr = xr.open_dataset(data_dir + 'HadCM3BL/' + exp + '.pd.clim.nc', decode_times=False).precip_mm_srf[:,0,:,:]*86400 
     
     # add cyclic longitude
     modelHeight_cyclic, longitude_cyclic = add_cyclic_point(modelHeight, coord=longitude)
     lsm_cyclic = add_cyclic_point(lsm)
-
+    uwnd_cyclic,longitudeV_cyclic = add_cyclic_point(uwnd, coord=longitudeV)
+    vwnd_cyclic = add_cyclic_point(vwnd)
+ 
+    # annual mean data
+    uwnd_ym = uwnd_cyclic.mean(axis=0)
+    vwnd_ym = vwnd_cyclic.mean(axis=0)
+    
     axes[int(row),column] = plt.subplot(6, 2, expCount+1, projection=ccrs.Robinson())
     axes[int(row),column].set_global()
 
@@ -517,7 +530,23 @@ for expCount, exp in enumerate(exp_list):
 
     # coastline
     cn = axes[int(row),column].contour(longitude_cyclic, latitude, modelHeight_cyclic, transform=ccrs.PlateCarree(),levels=[0.0], colors='black',zorder=1, linewidths=2.0)  
-
+        
+    skip = 1
+    
+    q = axes[int(row),column].quiver(longitudeV_cyclic[::skip], 
+                                     latitudeV[::skip], 
+                                     uwnd_ym[::skip,::skip], 
+                                     vwnd_ym[::skip,::skip], 
+                                     transform=ccrs.PlateCarree(), 
+                                     zorder=3,
+                                     scale = 300, width = 0.002, pivot='mid',
+                                     edgecolor='k', linewidth=.3, facecolor='w')
+    
+    qk = axes[int(row),column].quiverkey(q, X=0.81, Y=1.05, U=10,
+        label='10 m/s', labelpos='E')
+    
+    qk.text.set_fontsize(14)    
+    
     axes[int(row),column].text(0.5, 1.05, labels[expCount], transform=axes[int(row),column].transAxes, fontsize=18, va='center', ha='center', zorder=5)
  
     # Late Devonian Clastic Wedge: Time Slices 385 Ma – 359 Ma
@@ -562,6 +591,6 @@ for expCount, exp in enumerate(exp_list):
     row += 0.5
             
 if save_figures:
-     #plt.savefig(work_dir + '/figures/Devono-Mississippian-global-geographys.jpg', dpi=200)
-    plt.savefig(work_dir + '/figures/Devono-Mississippian-global-geographys.pdf')
+     #plt.savefig(work_dir + '/figures/Devono-Mississippian-global-maps.jpg', dpi=200)
+    plt.savefig(work_dir + '/figures/Devono-Mississippian-global-maps.pdf')
 
